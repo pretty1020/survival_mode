@@ -2,7 +2,7 @@
   "expo": {
     "name": "Survival Mode Budget Challenge",
     "slug": "survivor-mode",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "survivalbudget",
@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a0a0f"
       },
-      "package": "com.survivalmode.budgetchallenge"
+      "package": "com.survivalmode.budgetchallenge",
+      "versionCode": 5
     },
     "plugins": [
       "expo-router",

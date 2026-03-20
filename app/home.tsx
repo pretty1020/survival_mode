@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Alert, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert, TextInput, Modal, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useApp } from '@/context/AppContext';
@@ -12,9 +12,11 @@ import { BudgetPeriod } from '@/types';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const { userData, isPremium, isLoading, setUserData } = useApp();
   const [budgetModalVisible, setBudgetModalVisible] = useState(false);
   const [editBudget, setEditBudget] = useState('500');
+  const isNarrow = width < 380;
 
   if (isLoading || !userData) {
     return (
@@ -81,19 +83,31 @@ export default function HomeScreen() {
           <SurvivalMeter status={status} size="large" />
         </View>
 
-        <View style={styles.quickStats}>
-          <Pressable style={styles.statCard} onPress={openBudgetModal}>
-            <Text style={styles.statValue}>₱{remaining}</Text>
-            <Text style={styles.statLabel}>Budget Left</Text>
-            <Text style={styles.statHint}>Tap to edit budget</Text>
+        <View style={[styles.quickStats, isNarrow && styles.quickStatsNarrow]}>
+          <Pressable style={[styles.statCard, isNarrow && styles.statCardNarrow]} onPress={openBudgetModal}>
+            <View style={styles.statCardContent}>
+              <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
+                ₱{remaining}
+              </Text>
+              <Text style={[styles.statLabel, isNarrow && styles.statLabelNarrow]} numberOfLines={1}>Budget Left</Text>
+              <Text style={[styles.statHint, isNarrow && styles.statHintNarrow]} numberOfLines={1}>Tap to edit</Text>
+            </View>
           </Pressable>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{userData.daysSurvived}</Text>
-            <Text style={styles.statLabel}>Days Survived</Text>
+          <View style={[styles.statCard, isNarrow && styles.statCardNarrow]}>
+            <View style={styles.statCardContent}>
+              <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
+                {userData.daysSurvived}
+              </Text>
+              <Text style={[styles.statLabel, isNarrow && styles.statLabelNarrow]} numberOfLines={1}>Days Survived</Text>
+            </View>
           </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>🔥 {userData.currentStreak}</Text>
-            <Text style={styles.statLabel}>Streak</Text>
+          <View style={[styles.statCard, isNarrow && styles.statCardNarrow]}>
+            <View style={styles.statCardContent}>
+              <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
+                🔥 {userData.currentStreak}
+              </Text>
+              <Text style={[styles.statLabel, isNarrow && styles.statLabelNarrow]} numberOfLines={1}>Streak</Text>
+            </View>
           </View>
         </View>
 
@@ -102,7 +116,7 @@ export default function HomeScreen() {
             <Text style={styles.challengeEmoji}>{dailyChallenge.emoji}</Text>
             <View style={styles.challengeText}>
               <Text style={styles.challengeTitle}>Today's Challenge</Text>
-              <Text style={styles.challengeDesc}>{dailyChallenge.title}: {dailyChallenge.description}</Text>
+              <Text style={styles.challengeDesc} numberOfLines={2}>{dailyChallenge.title}: {dailyChallenge.description}</Text>
             </View>
           </View>
         )}
@@ -140,7 +154,7 @@ export default function HomeScreen() {
             <View style={styles.latestEventCard}>
               <Text style={styles.latestEventEmoji}>{latestEvent.emoji}</Text>
               <View style={styles.latestEventContent}>
-                <Text style={styles.latestEventName}>{latestEvent.title}</Text>
+                <Text style={styles.latestEventName} numberOfLines={1}>{latestEvent.title}</Text>
                 <Text style={[styles.latestEventImpact, latestEvent.impact > 0 ? styles.impactPos : styles.impactNeg]}>
                   {latestEvent.impact > 0 ? '+' : ''}₱{latestEvent.impact}
                 </Text>
@@ -161,7 +175,7 @@ export default function HomeScreen() {
             periodExpenses.slice(0, 3).map((e) => (
               <View key={e.id} style={styles.miniExpense}>
                 <Text style={styles.miniEmoji}>{e.emoji || '💰'}</Text>
-                <Text style={styles.miniNote}>{e.note || e.category}</Text>
+                <Text style={styles.miniNote} numberOfLines={1}>{e.note || e.category}</Text>
                 <Text style={styles.miniAmount}>-₱{e.amount}</Text>
               </View>
             ))
@@ -214,19 +228,34 @@ const styles = StyleSheet.create({
   greeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
   tagline: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginTop: 2 },
   meterSection: { marginBottom: 24 },
-  quickStats: { flexDirection: 'row', gap: 12, marginBottom: 20 },
+  quickStats: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  quickStatsNarrow: { gap: 6 },
   statCard: {
     flex: 1,
+    minWidth: 0,
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 16,
-    padding: 16,
+    padding: 12,
+    paddingVertical: 14,
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
+    overflow: 'hidden',
   },
-  statValue: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  statLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 4 },
-  statHint: { color: 'rgba(255,255,255,0.4)', fontSize: 9, marginTop: 2 },
+  statCardNarrow: { minWidth: 0, padding: 8, paddingVertical: 10 },
+  statCardContent: {
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statValue: { color: '#fff', fontSize: 16, fontWeight: '700', textAlign: 'center', width: '100%' },
+  statValueNarrow: { fontSize: 14 },
+  statLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 4, textAlign: 'center', width: '100%' },
+  statLabelNarrow: { fontSize: 10, marginTop: 2 },
+  statHint: { color: 'rgba(255,255,255,0.4)', fontSize: 9, marginTop: 2, textAlign: 'center', width: '100%' },
+  statHintNarrow: { fontSize: 8, marginTop: 1 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 24 },
   modalContent: { backgroundColor: '#1e293b', borderRadius: 20, padding: 24, width: '100%', maxWidth: 320 },
   modalTitle: { color: '#fff', fontSize: 18, fontWeight: '700', marginBottom: 16 },
@@ -246,7 +275,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(139,92,246,0.3)',
   },
   challengeEmoji: { fontSize: 32, marginRight: 14 },
-  challengeText: { flex: 1 },
+  challengeText: { flex: 1, minWidth: 0 },
   challengeTitle: { color: '#a78bfa', fontSize: 12, fontWeight: '600', marginBottom: 4 },
   challengeDesc: { color: '#fff', fontSize: 14 },
   ctaGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
@@ -274,7 +303,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.06)',
   },
   latestEventEmoji: { fontSize: 32, marginRight: 14 },
-  latestEventContent: { flex: 1 },
+  latestEventContent: { flex: 1, minWidth: 0 },
   latestEventName: { color: '#fff', fontSize: 15, fontWeight: '600' },
   latestEventImpact: { fontSize: 16, fontWeight: '700', marginTop: 2 },
   impactPos: { color: '#4ade80' },
@@ -290,6 +319,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
   miniEmoji: { fontSize: 20, marginRight: 12 },
-  miniNote: { flex: 1, color: '#fff', fontSize: 14 },
-  miniAmount: { color: '#f87171', fontSize: 14, fontWeight: '600' },
+  miniNote: { flex: 1, minWidth: 0, color: '#fff', fontSize: 14 },
+  miniAmount: { color: '#f87171', fontSize: 14, fontWeight: '600', marginLeft: 8, flexShrink: 0 },
 });

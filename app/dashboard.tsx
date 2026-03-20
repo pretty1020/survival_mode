@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
   statBox: {
     flex: 1,
+    minWidth: 0,
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 14,
     padding: 14,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
   },
-  statValue: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  statValue: { color: '#fff', fontSize: 16, fontWeight: '700', textAlign: 'center' },
   spentValue: { color: '#f87171' },
   remainingValue: { color: '#4ade80' },
   statLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 4 },

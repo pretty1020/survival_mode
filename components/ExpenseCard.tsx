@@ -24,7 +24,9 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
         </Text>
         <Text style={styles.time}>{formatTime(expense.timestamp)}</Text>
       </View>
-      <Text style={styles.amount}>-₱{expense.amount}</Text>
+      <View style={styles.amountWrap}>
+        <Text style={styles.amount} numberOfLines={1}>-₱{expense.amount}</Text>
+      </View>
     </View>
   );
 }
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    minWidth: 0,
   },
   category: {
     color: '#fff',
@@ -69,6 +72,10 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.5)',
     fontSize: 11,
     marginTop: 4,
+  },
+  amountWrap: {
+    flexShrink: 0,
+    marginLeft: 12,
   },
   amount: {
     color: '#f87171',

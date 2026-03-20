@@ -177,7 +177,7 @@ export const dataService = {
   async getOrCreateUserData(): Promise<UserData> {
     let data = await this.getUserData();
     if (!data) {
-      data = createSampleData();
+      data = createDefaultData();
       await this.saveUserData(data);
     }
     return data;

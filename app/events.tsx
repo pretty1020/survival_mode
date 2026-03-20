@@ -59,6 +59,13 @@ export default function EventsScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.explanationBox}>
+          <Text style={styles.explanationTitle}>What are Events?</Text>
+          <Text style={styles.explanationText}>
+            Events simulate real-life financial surprises—both good and bad. Tap the button below to trigger a random event that adds or subtracts from your budget. It helps you practice adapting when life throws curveballs at your wallet!
+          </Text>
+        </View>
+
         <Pressable style={styles.triggerButton} onPress={triggerRandomEvent}>
           <LinearGradient
             colors={['#7c3aed', '#5b21b6']}
@@ -130,28 +137,33 @@ function EventCard({
       </View>
       <View style={styles.eventContent}>
         <View style={styles.eventHeader}>
-          <Text style={styles.eventTitle}>{event.title}</Text>
+          <View style={styles.eventTitleWrap}>
+            <Text style={styles.eventTitle} numberOfLines={2}>{event.title}</Text>
+          </View>
           {event.isPremium && (
             <View style={styles.premiumTag}>
               <Text style={styles.premiumTagText}>PRO</Text>
             </View>
           )}
         </View>
-        <Text style={styles.eventDesc}>{event.description}</Text>
+        <Text style={styles.eventDesc} numberOfLines={2}>{event.description}</Text>
         {showDate && (
           <Text style={styles.eventDate}>
             {formatDate(event.dateKey)}
           </Text>
         )}
       </View>
-      <Text
-        style={[
-          styles.eventImpact,
-          isPositive ? styles.impactPositive : styles.impactNegative,
-        ]}
-      >
-        {isPositive ? '+' : ''}₱{event.impact}
-      </Text>
+      <View style={styles.eventImpactWrap}>
+        <Text
+          style={[
+            styles.eventImpact,
+            isPositive ? styles.impactPositive : styles.impactNegative,
+          ]}
+          numberOfLines={1}
+        >
+          {isPositive ? '+' : ''}₱{event.impact}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -166,6 +178,25 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingBottom: 40,
+  },
+  explanationBox: {
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  explanationTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  explanationText: {
+    color: 'rgba(255,255,255,0.75)',
+    fontSize: 14,
+    lineHeight: 22,
   },
   triggerButton: {
     borderRadius: 20,
@@ -237,11 +268,16 @@ const styles = StyleSheet.create({
   },
   eventContent: {
     flex: 1,
+    minWidth: 0,
   },
   eventHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  eventTitleWrap: {
+    flex: 1,
+    minWidth: 0,
   },
   eventTitle: {
     color: '#fff',
@@ -253,6 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
+    flexShrink: 0,
   },
   premiumTagText: {
     color: '#fde047',
@@ -268,6 +305,10 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.5)',
     fontSize: 11,
     marginTop: 4,
+  },
+  eventImpactWrap: {
+    flexShrink: 0,
+    marginLeft: 12,
   },
   eventImpact: {
     fontSize: 18,
