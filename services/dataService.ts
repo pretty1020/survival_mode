@@ -38,24 +38,6 @@ const createDefaultData = (): UserData => ({
   categories: DEFAULT_CATEGORIES.map((c, i) => ({ ...c, id: `cat_${i}` })),
 });
 
-const createSampleData = (): UserData => {
-  const today = getDateKey();
-  const data = createDefaultData();
-  data.expenses = [
-    { id: '1', amount: 85, category: 'Food', note: 'Lunch', emoji: '🍔', timestamp: Date.now() - 3600000, dateKey: today },
-    { id: '2', amount: 50, category: 'Transport', note: 'Jeepney', emoji: '🚌', timestamp: Date.now() - 7200000, dateKey: today },
-    { id: '3', amount: 99, category: 'Load/Data', note: 'Data promo', emoji: '📱', timestamp: Date.now() - 10800000, dateKey: today },
-  ];
-  data.events = [
-    { id: 'e1', title: 'Friend paid for lunch', description: 'Blessed!', impact: 150, emoji: '🙏', timestamp: Date.now() - 1800000, dateKey: today },
-  ];
-  data.daysSurvived = 12;
-  data.currentStreak = 5;
-  data.bestStreak = 12;
-  data.badges = ['first-day', 'tipid-warrior'];
-  data.challenges = [{ ...DAILY_CHALLENGES[Math.floor(Math.random() * DAILY_CHALLENGES.length)], dateKey: today }];
-  return data;
-};
 
 export const dataService = {
   async getUserId(): Promise<string | null> {
@@ -184,7 +166,6 @@ export const dataService = {
   },
 
   createDefaultData,
-  createSampleData,
   getDateKey,
   getWeekKey,
   getMonthKey,

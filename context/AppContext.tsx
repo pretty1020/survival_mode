@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import { UserData } from '@/types';
 import { budgetService } from '@/services/budgetService';
 import { revenuecatService } from '@/services/revenuecatService';
@@ -37,6 +38,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       await refreshUserData();
       setIsLoading(false);
     })();
+  }, [refreshUserData]);
+
+  useEffect(() => {
+    const onStateChange = (nextState: AppStateStatus) => {
+      if (nextState === 'active') {
+        refreshUserData();
+      }
+    };
+    const sub = AppState.addEventListener('change', onStateChange);
+    return () => sub.remove();
   }, [refreshUserData]);
 
   return (

@@ -104,8 +104,12 @@ const styles = StyleSheet.create({
   message: {
     color: 'rgba(255,255,255,0.8)',
     fontSize: 13,
+    marginTop: 2,
+    marginBottom: 16,
+    minHeight: 20,
   },
   messageSmall: {
     fontSize: 11,
+    marginBottom: 12,
   },
 });

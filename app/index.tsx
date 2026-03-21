@@ -1,13 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withDelay,
-} from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { BudgetSurvivorLogo } from '@/components/BudgetSurvivorLogo';
 import { useApp } from '@/context/AppContext';
 import { revenuecatService } from '@/services/revenuecatService';
@@ -15,29 +10,16 @@ import { revenuecatService } from '@/services/revenuecatService';
 export default function LandingScreen() {
   const router = useRouter();
   const { refreshPremium, refreshUserData } = useApp();
-  const logoOpacity = useSharedValue(0);
-  const logoY = useSharedValue(30);
-  const headlineOpacity = useSharedValue(0);
-  const headlineY = useSharedValue(20);
-  const subOpacity = useSharedValue(0);
-  const subY = useSharedValue(15);
-  const buttonsOpacity = useSharedValue(0);
-  const buttonsY = useSharedValue(25);
+  const logoOpacity = useSharedValue(1);
+  const logoY = useSharedValue(0);
+  const headlineOpacity = useSharedValue(1);
+  const headlineY = useSharedValue(0);
+  const subOpacity = useSharedValue(1);
+  const subY = useSharedValue(0);
+  const buttonsOpacity = useSharedValue(1);
+  const buttonsY = useSharedValue(0);
   const [restoring, setRestoring] = React.useState(false);
 
-  useEffect(() => {
-    logoOpacity.value = withDelay(100, withTiming(1, { duration: 600 }));
-    logoY.value = withDelay(100, withTiming(0, { duration: 600 }));
-
-    headlineOpacity.value = withDelay(350, withTiming(1, { duration: 500 }));
-    headlineY.value = withDelay(350, withTiming(0, { duration: 500 }));
-
-    subOpacity.value = withDelay(550, withTiming(1, { duration: 500 }));
-    subY.value = withDelay(550, withTiming(0, { duration: 500 }));
-
-    buttonsOpacity.value = withDelay(750, withTiming(1, { duration: 500 }));
-    buttonsY.value = withDelay(750, withTiming(0, { duration: 500 }));
-  }, []);
 
   const logoStyle = useAnimatedStyle(() => ({
     opacity: logoOpacity.value,
@@ -112,6 +94,13 @@ export default function LandingScreen() {
             >
               <Text style={styles.primaryButtonText}>Start Surviving</Text>
             </LinearGradient>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [styles.paymentButton, pressed && styles.buttonPressed]}
+            onPress={() => router.push('/paywall')}
+          >
+            <Text style={styles.paymentButtonText}>✨ Unlock Lifetime — ₱89</Text>
           </Pressable>
 
           <Pressable
@@ -192,6 +181,19 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: '700',
+  },
+  paymentButton: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderRadius: 14,
+    backgroundColor: 'rgba(234,179,8,0.25)',
+    borderWidth: 1,
+    borderColor: 'rgba(234,179,8,0.5)',
+  },
+  paymentButtonText: {
+    color: '#fde047',
+    fontSize: 16,
     fontWeight: '700',
   },
   secondaryButton: {

@@ -24,6 +24,7 @@ export default function ExpensesScreen() {
   if (!userData) return null;
 
   const expenses = budgetService.getExpensesFiltered(userData, filter);
+  const totalExpenses = budgetService.getTotalExpensesFiltered(userData, filter);
   const byDate = expenses.reduce<Record<string, Expense[]>>((acc, e) => {
     if (!acc[e.dateKey]) acc[e.dateKey] = [];
     acc[e.dateKey].push(e);
@@ -33,6 +34,10 @@ export default function ExpensesScreen() {
 
   return (
     <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+      <View style={styles.totalExpensesRow}>
+        <Text style={styles.totalExpensesLabel}>Total Expenses</Text>
+        <Text style={styles.totalExpensesValue}>₱{totalExpenses}</Text>
+      </View>
       <View style={styles.filterRow}>
         {FILTERS.map((f) => (
           <Pressable
@@ -73,6 +78,24 @@ export default function ExpensesScreen() {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  totalExpensesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingBottom: 8,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
+  totalExpensesLabel: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  totalExpensesValue: {
+    color: '#f87171',
+    fontSize: 20,
+    fontWeight: '800',
+  },
   filterRow: {
     flexDirection: 'row',
     padding: 16,

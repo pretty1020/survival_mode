@@ -68,13 +68,15 @@ export const budgetService = {
     // Daily reset
     if (data.lastResetDaily !== today) {
       const lastDay = data.lastResetDaily;
-      const lastDaySpent = data.expenses
+      const lastDayExpenses = data.expenses
         .filter((e) => e.dateKey === lastDay)
         .reduce((s, e) => s + e.amount, 0);
-      const lastDayEvents = data.events
+      const lastDayEventImpact = data.events
         .filter((e) => e.dateKey === lastDay)
         .reduce((s, e) => s + e.impact, 0);
-      const survived = lastDaySpent + lastDayEvents <= data.budgetSettings.dailyBudget;
+      // Expenses deduct; positive event impact = income (adds), negative = expense
+      const netDrain = lastDayExpenses - lastDayEventImpact;
+      const survived = netDrain <= data.budgetSettings.dailyBudget;
       newData = {
         ...newData,
         daysSurvived: survived ? newData.daysSurvived + 1 : newData.daysSurvived,
@@ -108,7 +110,10 @@ export const budgetService = {
     const budget = getBudgetForPeriod(data, period);
     const expenses = data.expenses.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));
     const events = data.events.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));
-    const totalSpent = expenses.reduce((s, e) => s + e.amount, 0) + events.reduce((s, e) => s + e.impact, 0);
+    // Expenses DEDUCT; events: positive impact = income (ADD), negative = expense (DEDUCT)
+    const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+    const netEventImpact = events.reduce((s, e) => s + e.impact, 0);
+    const totalSpent = totalExpenses - netEventImpact;
     const remaining = Math.max(0, budget - totalSpent);
     const percentRemaining = budget > 0 ? (remaining / budget) * 100 : 0;
 
@@ -134,7 +139,21 @@ export const budgetService = {
     const periodKey = getPeriodKey(period);
     const expenses = data.expenses.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));
     const events = data.events.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));
-    return expenses.reduce((s, e) => s + e.amount, 0) + events.reduce((s, e) => s + e.impact, 0);
+    // Expenses deduct; events: positive impact = income (adds), negative = expense (deducts)
+    const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+    const netEventImpact = events.reduce((s, e) => s + e.impact, 0);
+    return totalExpenses - netEventImpact;
+  },
+
+  getTotalExpenses(data: UserData, period: BudgetPeriod): number {
+    const periodKey = getPeriodKey(period);
+    const expenses = data.expenses.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));
+    return expenses.reduce((s, e) => s + e.amount, 0);
+  },
+
+  getTotalExpensesFiltered(data: UserData, filter: 'today' | 'week' | 'month'): number {
+    const expenses = this.getExpensesFiltered(data, filter);
+    return expenses.reduce((s, e) => s + e.amount, 0);
   },
 
   getExpensesForPeriod(data: UserData, period: BudgetPeriod) {

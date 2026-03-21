@@ -57,8 +57,8 @@ export default function SurvivalDashboardScreen() {
   }));
 
   const getInsight = () => {
-    const pct = budget > 0 ? (totalSpent / budget) * 100 : 0;
-    if (pct === 0) return "You haven't spent anything yet. Legendary restraint! 💪";
+    const pct = budget > 0 ? Math.max(0, (totalSpent / budget) * 100) : 0;
+    if (pct <= 0) return "You haven't spent anything yet. Legendary restraint! 💪";
     if (pct < 50) return "You're under 50% budget. Tipid warrior energy! ⚔️";
     if (pct < 80) return "Solid spending. Still in the safe zone. Keep it up!";
     if (pct < 100) return "Budget getting tight. Every peso counts now. 🎯";
