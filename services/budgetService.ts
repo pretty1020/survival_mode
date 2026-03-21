@@ -192,6 +192,25 @@ export const budgetService = {
     return newData;
   },
 
+  async updateExpense(data: UserData, id: string, updates: Partial<Pick<Expense, 'amount' | 'category' | 'note' | 'emoji'>>): Promise<UserData> {
+    const idx = data.expenses.findIndex((e) => e.id === id);
+    if (idx < 0) return data;
+    const updated = [...data.expenses];
+    updated[idx] = { ...updated[idx], ...updates };
+    const newData = { ...data, expenses: updated };
+    await dataService.saveUserData(newData);
+    return newData;
+  },
+
+  async deleteExpense(data: UserData, id: string): Promise<UserData> {
+    const newData = {
+      ...data,
+      expenses: data.expenses.filter((e) => e.id !== id),
+    };
+    await dataService.saveUserData(newData);
+    return newData;
+  },
+
   async addEvent(data: UserData, event: FinancialEvent): Promise<UserData> {
     const newData: UserData = { ...data, events: [event, ...data.events] };
     await dataService.saveUserData(newData);

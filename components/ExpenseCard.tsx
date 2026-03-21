@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Expense } from '@/types';
 
 interface ExpenseCardProps {
   expense: Expense;
+  onEdit?: (expense: Expense) => void;
+  onDelete?: (expense: Expense) => void;
 }
 
 const formatTime = (timestamp: number) => {
@@ -11,7 +13,9 @@ const formatTime = (timestamp: number) => {
   return d.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
 };
 
-export function ExpenseCard({ expense }: ExpenseCardProps) {
+export function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardProps) {
+  const showActions = onEdit || onDelete;
+
   return (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
@@ -19,13 +23,27 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
       </View>
       <View style={styles.content}>
         <Text style={styles.category}>{expense.category}</Text>
-        <Text style={styles.note} numberOfLines={1}>
-          {expense.note || 'Expense'}
-        </Text>
+        {expense.note ? (
+          <Text style={styles.note} numberOfLines={2}>{expense.note}</Text>
+        ) : null}
         <Text style={styles.time}>{formatTime(expense.timestamp)}</Text>
       </View>
       <View style={styles.amountWrap}>
         <Text style={styles.amount} numberOfLines={1}>-₱{expense.amount}</Text>
+        {showActions && (
+          <View style={styles.actions}>
+            {onEdit && (
+              <Pressable style={styles.actionBtn} onPress={() => onEdit(expense)}>
+                <Text style={styles.actionText}>✏️</Text>
+              </Pressable>
+            )}
+            {onDelete && (
+              <Pressable style={styles.actionBtn} onPress={() => onDelete(expense)}>
+                <Text style={styles.actionText}>🗑️</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
       </View>
     </View>
   );
@@ -76,10 +94,22 @@ const styles = StyleSheet.create({
   amountWrap: {
     flexShrink: 0,
     marginLeft: 12,
+    alignItems: 'flex-end',
   },
   amount: {
     color: '#f87171',
     fontSize: 18,
     fontWeight: '700',
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  actionBtn: {
+    padding: 6,
+  },
+  actionText: {
+    fontSize: 18,
   },
 });

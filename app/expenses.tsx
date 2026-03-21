@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useApp } from '@/context/AppContext';
 import { ExpenseCard } from '@/components/ExpenseCard';
@@ -18,7 +19,8 @@ const formatDate = (dateKey: string) => {
 };
 
 export default function ExpensesScreen() {
-  const { userData } = useApp();
+  const router = useRouter();
+  const { userData, setUserData } = useApp();
   const [filter, setFilter] = useState<ExpenseFilter>('today');
 
   if (!userData) return null;
@@ -31,6 +33,24 @@ export default function ExpensesScreen() {
     return acc;
   }, {});
   const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+  const handleEdit = (expense: Expense) => {
+    router.push(`/edit-expense/${expense.id}`);
+  };
+
+  const handleDelete = (expense: Expense) => {
+    Alert.alert('Delete Expense', `Remove ₱${expense.amount} (${expense.category})?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          const newData = await budgetService.deleteExpense(userData!, expense.id);
+          setUserData(newData);
+        },
+      },
+    ]);
+  };
 
   return (
     <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
@@ -66,7 +86,7 @@ export default function ExpensesScreen() {
               {byDate[dateKey]
                 .sort((a, b) => b.timestamp - a.timestamp)
                 .map((e) => (
-                  <ExpenseCard key={e.id} expense={e} />
+                  <ExpenseCard key={e.id} expense={e} onEdit={handleEdit} onDelete={handleDelete} />
                 ))}
             </View>
           ))

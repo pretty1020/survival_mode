@@ -134,6 +134,10 @@ export default function HomeScreen() {
             <Text style={styles.ctaEmoji}>📋</Text>
             <Text style={styles.ctaLabel}>Expenses</Text>
           </Pressable>
+          <Pressable style={styles.ctaButton} onPress={() => router.push('/calendar')}>
+            <Text style={styles.ctaEmoji}>📅</Text>
+            <Text style={styles.ctaLabel}>Calendar</Text>
+          </Pressable>
           <Pressable style={styles.ctaButton} onPress={() => router.push('/events')}>
             <Text style={styles.ctaEmoji}>⚡</Text>
             <Text style={styles.ctaLabel}>Events</Text>
@@ -175,7 +179,10 @@ export default function HomeScreen() {
             periodExpenses.slice(0, 3).map((e) => (
               <View key={e.id} style={styles.miniExpense}>
                 <Text style={styles.miniEmoji}>{e.emoji || '💰'}</Text>
-                <Text style={styles.miniNote} numberOfLines={1}>{e.note || e.category}</Text>
+                <View style={styles.miniTextWrap}>
+                  <Text style={styles.miniCategory} numberOfLines={1}>{e.category}</Text>
+                  {e.note ? <Text style={styles.miniNote} numberOfLines={1}>{e.note}</Text> : null}
+                </View>
                 <Text style={styles.miniAmount}>-₱{e.amount}</Text>
               </View>
             ))
@@ -227,8 +234,8 @@ const styles = StyleSheet.create({
   headerText: { flex: 1 },
   greeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
   tagline: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginTop: 2 },
-  meterSection: { marginBottom: 24 },
-  quickStats: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  meterSection: { marginBottom: 8 },
+  quickStats: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
   quickStatsNarrow: { gap: 6 },
   statCard: {
     flex: 1,
@@ -319,6 +326,8 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
   miniEmoji: { fontSize: 20, marginRight: 12 },
-  miniNote: { flex: 1, minWidth: 0, color: '#fff', fontSize: 14 },
+  miniTextWrap: { flex: 1, minWidth: 0 },
+  miniCategory: { color: '#fff', fontSize: 14, fontWeight: '600' },
+  miniNote: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
   miniAmount: { color: '#f87171', fontSize: 14, fontWeight: '600', marginLeft: 8, flexShrink: 0 },
 });

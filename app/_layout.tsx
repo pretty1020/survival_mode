@@ -28,8 +28,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="home" options={{ headerShown: false }} />
         <Stack.Screen name="add-expense" options={{ title: 'Add Expense' }} />
+        <Stack.Screen name="edit-expense/[id]" options={{ title: 'Edit Expense' }} />
         <Stack.Screen name="dashboard" options={{ title: 'Survival Dashboard' }} />
         <Stack.Screen name="expenses" options={{ title: 'Expense History' }} />
+        <Stack.Screen name="calendar" options={{ title: 'Calendar' }} />
         <Stack.Screen name="events" options={{ title: 'Financial Events' }} />
         <Stack.Screen name="results" options={{ title: 'Your Results' }} />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />

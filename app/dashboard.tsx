@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useApp } from '@/context/AppContext';
@@ -27,6 +27,25 @@ export default function SurvivalDashboardScreen() {
   const router = useRouter();
   const { userData, isPremium, setUserData } = useApp();
 
+  const handleEditExpense = (expense: import('@/types').Expense) => {
+    router.push(`/edit-expense/${expense.id}`);
+  };
+
+  const handleDeleteExpense = (expense: import('@/types').Expense) => {
+    Alert.alert('Delete Expense', `Remove ₱${expense.amount} (${expense.category})?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          if (!userData) return;
+          const newData = await budgetService.deleteExpense(userData, expense.id);
+          setUserData(newData);
+        },
+      },
+    ]);
+  };
+
   if (!userData) return null;
 
   const period = userData.budgetSettings.budgetPeriod;
@@ -39,8 +58,8 @@ export default function SurvivalDashboardScreen() {
     : period === 'weekly' ? userData.budgetSettings.weeklyBudget
     : userData.budgetSettings.monthlyBudget;
   const status = budgetService.getSurvivalStatus(userData, period);
-  const totalSpent = budgetService.getTotalSpent(userData, period);
-  const remaining = Math.max(0, budget - totalSpent);
+  const totalExpenses = budgetService.getTotalExpenses(userData, period);
+  const remaining = Math.max(0, budget - budgetService.getTotalSpent(userData, period));
   const periodExpenses = budgetService.getExpensesForPeriod(userData, period);
   const historyLimit = budgetService.getHistoryLimit(isPremium);
 
@@ -57,7 +76,7 @@ export default function SurvivalDashboardScreen() {
   }));
 
   const getInsight = () => {
-    const pct = budget > 0 ? Math.max(0, (totalSpent / budget) * 100) : 0;
+    const pct = budget > 0 ? Math.max(0, (totalExpenses / budget) * 100) : 0;
     if (pct <= 0) return "You haven't spent anything yet. Legendary restraint! 💪";
     if (pct < 50) return "You're under 50% budget. Tipid warrior energy! ⚔️";
     if (pct < 80) return "Solid spending. Still in the safe zone. Keep it up!";
@@ -85,7 +104,7 @@ export default function SurvivalDashboardScreen() {
             <Text style={styles.statLabel}>{period === 'daily' ? 'Daily' : period === 'weekly' ? 'Weekly' : 'Monthly'} Budget</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={[styles.statValue, styles.spentValue]}>₱{totalSpent}</Text>
+            <Text style={[styles.statValue, styles.spentValue]}>₱{totalExpenses}</Text>
             <Text style={styles.statLabel}>Spent</Text>
           </View>
           <View style={styles.statBox}>
@@ -195,7 +214,7 @@ export default function SurvivalDashboardScreen() {
           ) : (
             periodExpenses
               .slice(0, historyLimit === Infinity ? 20 : historyLimit)
-              .map((e) => <ExpenseCard key={e.id} expense={e} />)
+              .map((e) => <ExpenseCard key={e.id} expense={e} onEdit={handleEditExpense} onDelete={handleDeleteExpense} />)
           )}
         </View>
       </ScrollView>
@@ -207,8 +226,8 @@ const styles = StyleSheet.create({
   gradient: { flex: 1 },
   scroll: { flex: 1 },
   content: { padding: 20, paddingBottom: 40 },
-  meterSection: { marginBottom: 24 },
-  statsRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
+  meterSection: { marginBottom: 8 },
+  statsRow: { flexDirection: 'row', gap: 12, marginTop: 16, marginBottom: 20 },
   statBox: {
     flex: 1,
     minWidth: 0,
