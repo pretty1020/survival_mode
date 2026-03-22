@@ -72,7 +72,7 @@ export function SurvivalMeter({ status, size = 'large' }: SurvivalMeterProps) {
       <Text style={[styles.label, size === 'small' && styles.labelSmall]}>
         {Math.round(status.percentRemaining)}% budget left
       </Text>
-      <View style={styles.messageContainer}>
+      <View style={styles.messageOuter}>
         <Text style={[styles.message, size === 'small' && styles.messageSmall]}>{status.message}</Text>
       </View>
     </View>
@@ -103,17 +103,20 @@ const styles = StyleSheet.create({
   labelSmall: {
     fontSize: 12,
   },
-  messageContainer: {
-    marginTop: 6,
-    marginBottom: 20,
-    minHeight: 36,
-    paddingVertical: 4,
+  messageOuter: {
+    marginTop: 8,
+    marginBottom: 24,
+    minHeight: 40,
+    alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 8,
   },
   message: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 13,
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 14,
     lineHeight: 20,
+    textAlign: 'center',
+    maxWidth: '100%',
   },
   messageSmall: {
     fontSize: 11,

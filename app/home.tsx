@@ -93,14 +93,16 @@ export default function HomeScreen() {
               <Text style={[styles.statHint, isNarrow && styles.statHintNarrow]} numberOfLines={1}>Tap to edit</Text>
             </View>
           </Pressable>
-          <View style={[styles.statCard, isNarrow && styles.statCardNarrow]}>
-            <View style={styles.statCardContent}>
-              <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
-                {userData.daysSurvived}
-              </Text>
-              <Text style={[styles.statLabel, isNarrow && styles.statLabelNarrow]} numberOfLines={1}>Days Survived</Text>
+          {budgetPeriod !== 'daily' && (
+            <View style={[styles.statCard, isNarrow && styles.statCardNarrow]}>
+              <View style={styles.statCardContent}>
+                <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
+                  {userData.daysSurvived}
+                </Text>
+                <Text style={[styles.statLabel, isNarrow && styles.statLabelNarrow]} numberOfLines={1}>Days Survived</Text>
+              </View>
             </View>
-          </View>
+          )}
           <View style={[styles.statCard, isNarrow && styles.statCardNarrow]}>
             <View style={styles.statCardContent}>
               <Text style={[styles.statValue, isNarrow && styles.statValueNarrow]} numberOfLines={1} adjustsFontSizeToFit>
@@ -234,8 +236,8 @@ const styles = StyleSheet.create({
   headerText: { flex: 1 },
   greeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
   tagline: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginTop: 2 },
-  meterSection: { marginBottom: 8 },
-  quickStats: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
+  meterSection: { marginBottom: 0 },
+  quickStats: { flexDirection: 'row', gap: 10, marginTop: 8, marginBottom: 20 },
   quickStatsNarrow: { gap: 6 },
   statCard: {
     flex: 1,

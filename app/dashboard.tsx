@@ -124,11 +124,13 @@ export default function SurvivalDashboardScreen() {
             <Text style={styles.streakValue}>{userData.bestStreak}</Text>
             <Text style={styles.streakLabel}>Best Streak</Text>
           </View>
-          <View style={styles.streakCard}>
-            <Text style={styles.streakEmoji}>📅</Text>
-            <Text style={styles.streakValue}>{userData.daysSurvived}</Text>
-            <Text style={styles.streakLabel}>Days Survived</Text>
-          </View>
+          {period !== 'daily' && (
+            <View style={styles.streakCard}>
+              <Text style={styles.streakEmoji}>📅</Text>
+              <Text style={styles.streakValue}>{userData.daysSurvived}</Text>
+              <Text style={styles.streakLabel}>Days Survived</Text>
+            </View>
+          )}
         </View>
 
         {chartData.length > 0 && (

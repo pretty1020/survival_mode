@@ -32,11 +32,23 @@ export default function EventsScreen() {
   const triggerRandomEvent = async () => {
     if (!userData) return;
 
-    const event = budgetService.generateRandomEvent(isPremium);
-    const newData = await budgetService.addEvent(userData, event);
-    setUserData(newData);
-    setPopupEvent(event);
-    setPopupVisible(true);
+    Alert.alert(
+      'Trigger Event',
+      'This action will affect your budget. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Continue',
+          onPress: async () => {
+            const event = budgetService.generateRandomEvent(isPremium);
+            const newData = await budgetService.addEvent(userData, event);
+            setUserData(newData);
+            setPopupEvent(event);
+            setPopupVisible(true);
+          },
+        },
+      ]
+    );
   };
 
   const handleClosePopup = () => {

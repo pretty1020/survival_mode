@@ -156,6 +156,15 @@ export const budgetService = {
     return expenses.reduce((s, e) => s + e.amount, 0);
   },
 
+  didSurviveDay(data: UserData, dateKey: string): boolean {
+    const today = getDateKey();
+    if (dateKey >= today) return false;
+    const dayExpenses = data.expenses.filter((e) => e.dateKey === dateKey).reduce((s, e) => s + e.amount, 0);
+    const dayEventImpact = data.events.filter((e) => e.dateKey === dateKey).reduce((s, e) => s + e.impact, 0);
+    const netDrain = dayExpenses - dayEventImpact;
+    return netDrain <= data.budgetSettings.dailyBudget;
+  },
+
   getExpensesForPeriod(data: UserData, period: BudgetPeriod) {
     const periodKey = getPeriodKey(period);
     return data.expenses.filter((e) => expenseInPeriod(e.dateKey, period, periodKey));

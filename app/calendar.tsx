@@ -115,6 +115,12 @@ export default function CalendarScreen() {
   const hasExpense = (dateKey: string) =>
     userData.expenses.some((e) => e.dateKey === dateKey);
 
+  const didSurvive = (dateKey: string) => {
+    const today = getDateKey();
+    if (dateKey >= today) return false;
+    return budgetService.didSurviveDay(userData, dateKey);
+  };
+
   const dayCellSize = Math.min(44, Math.floor((width - 48) / 7) - 4);
   const gridGap = 4;
 
@@ -170,6 +176,7 @@ export default function CalendarScreen() {
         {daysInMonth.map(({ date, isCurrentMonth, dateKey }, i) => {
           const isSelected = getDateKey(selectedDate) === dateKey;
           const hasDot = hasExpense(dateKey);
+          const survived = didSurvive(dateKey);
           return (
             <Pressable
               key={i}
@@ -178,6 +185,7 @@ export default function CalendarScreen() {
                 { width: dayCellSize, height: dayCellSize },
                 !isCurrentMonth && styles.dayCellDimmed,
                 isSelected && styles.dayCellSelected,
+                survived && styles.dayCellSurvived,
               ]}
               onPress={() => {
                 setSelectedDate(date);
@@ -192,7 +200,8 @@ export default function CalendarScreen() {
               >
                 {date.getDate()}
               </Text>
-              {hasDot && <View style={styles.dot} />}
+              {hasDot && <View style={[styles.dot, survived && styles.dotSurvived]} />}
+              {survived && !hasDot && <View style={styles.survivedBadge} />}
             </Pressable>
           );
         })}
@@ -311,6 +320,10 @@ const styles = StyleSheet.create({
   dayCellSelected: {
     backgroundColor: 'rgba(59,130,246,0.5)',
   },
+  dayCellSurvived: {
+    borderWidth: 2,
+    borderColor: 'rgba(34,197,94,0.6)',
+  },
   dayNum: { color: '#fff', fontSize: 14, fontWeight: '600' },
   dayNumDimmed: { color: 'rgba(255,255,255,0.6)' },
   dayNumSelected: { color: '#fff', fontWeight: '800' },
@@ -320,6 +333,17 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
+    backgroundColor: '#f87171',
+  },
+  dotSurvived: {
+    backgroundColor: '#22c55e',
+  },
+  survivedBadge: {
+    position: 'absolute',
+    bottom: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: '#22c55e',
   },
   selectedInfo: {
