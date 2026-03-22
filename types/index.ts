@@ -64,7 +64,6 @@ export interface UserData {
 export interface SurvivalStatus {
   percentRemaining: number;
   status: 'safe' | 'warning' | 'danger' | 'critical';
-  message: string;
 }
 
 export type ExpenseFilter = 'today' | 'week' | 'month';

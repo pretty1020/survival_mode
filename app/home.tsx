@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
   headerText: { flex: 1 },
   greeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
   tagline: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginTop: 2 },
-  meterSection: { marginBottom: 0 },
-  quickStats: { flexDirection: 'row', gap: 10, marginTop: 8, marginBottom: 20 },
+  meterSection: { marginBottom: 20 },
+  quickStats: { flexDirection: 'row', gap: 10, marginBottom: 20 },
   quickStatsNarrow: { gap: 6 },
   statCard: {
     flex: 1,

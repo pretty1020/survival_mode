@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
   gradient: { flex: 1 },
   scroll: { flex: 1 },
   content: { padding: 20, paddingBottom: 40 },
-  meterSection: { marginBottom: 8 },
-  statsRow: { flexDirection: 'row', gap: 12, marginTop: 16, marginBottom: 20 },
+  meterSection: { marginBottom: 20 },
+  statsRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
   statBox: {
     flex: 1,
     minWidth: 0,

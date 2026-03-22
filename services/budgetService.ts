@@ -118,21 +118,16 @@ export const budgetService = {
     const percentRemaining = budget > 0 ? (remaining / budget) * 100 : 0;
 
     let status: SurvivalStatus['status'] = 'safe';
-    let message = "You're cruising! Budget intact 💪";
     if (percentRemaining <= 0) {
       status = 'critical';
-      message = 'Budget obliterated. Tomorrow is a new day 😮‍💨';
     } else if (percentRemaining <= 15) {
       status = 'critical';
-      message = 'Danger zone: wallet critical! 🚨';
     } else if (percentRemaining <= 35) {
       status = 'danger';
-      message = 'Running on fumes... stay strong!';
     } else if (percentRemaining <= 60) {
       status = 'warning';
-      message = 'Budget getting tight. Choose wisely.';
     }
-    return { percentRemaining, status, message };
+    return { percentRemaining, status };
   },
 
   getTotalSpent(data: UserData, period: BudgetPeriod): number {
