@@ -24,7 +24,7 @@
         "backgroundColor": "#0a0a0f"
       },
       "package": "com.survivalmode.budgetchallenge",
-      "versionCode": 5
+      "versionCode": 15
     },
     "plugins": [
       "expo-router",
