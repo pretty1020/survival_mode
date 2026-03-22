@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -66,7 +66,12 @@ export default function LandingScreen() {
       colors={['#0a0a0f', '#0f172a', '#1e1b4b', '#312e81']}
       style={styles.gradient}
     >
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
         <Animated.View style={[styles.logoSection, logoStyle]}>
           <BudgetSurvivorLogo size={110} showGlow={true} />
         </Animated.View>
@@ -115,7 +120,7 @@ export default function LandingScreen() {
             )}
           </Pressable>
         </Animated.View>
-      </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -124,8 +129,11 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  content: {
+  scroll: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 40,

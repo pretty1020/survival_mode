@@ -7,7 +7,7 @@ export default function PrivacyScreen() {
     <LinearGradient colors={['#0a0a0f', '#0f172a']} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Privacy Policy</Text>
-        <Text style={styles.updated}>Last updated: March 2025</Text>
+        <Text style={styles.updated}>Last updated: March 20, 2025</Text>
         <Text style={styles.paragraph}>
           Survival Mode Budget Challenge respects your privacy. This policy describes how we handle your data.
         </Text>

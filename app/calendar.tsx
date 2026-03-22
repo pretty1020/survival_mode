@@ -29,12 +29,20 @@ const getMonthKey = (d: Date) => d.toISOString().slice(0, 7);
 export default function CalendarScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const { userData, isPremium, setUserData } = useApp();
+  const { userData, isPremium, setUserData, isLoading } = useApp();
   const [view, setView] = useState<CalendarView>('daily');
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading calendar...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const trySetView = (v: CalendarView) => {
     if (v === 'weekly' || v === 'monthly') {
@@ -116,16 +124,21 @@ export default function CalendarScreen() {
     userData.expenses.some((e) => e.dateKey === dateKey);
 
   const didSurvive = (dateKey: string) => {
-    const today = getDateKey();
+    const today = getDateKey(new Date());
     if (dateKey >= today) return false;
     return budgetService.didSurviveDay(userData, dateKey);
   };
 
-  const dayCellSize = Math.min(44, Math.floor((width - 48) / 7) - 4);
+  const dayCellSize = Math.max(36, Math.min(44, Math.floor((width - 48) / 7) - 4));
   const gridGap = 4;
 
   return (
     <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+      <ScrollView
+        style={styles.mainScroll}
+        contentContainerStyle={styles.mainScrollContent}
+        showsVerticalScrollIndicator={false}
+      >
       <View style={styles.viewToggle}>
         {(['daily', 'weekly', 'monthly'] as const).map((v) => (
           <Pressable
@@ -145,6 +158,7 @@ export default function CalendarScreen() {
 
       <View style={styles.monthNav}>
         <Pressable
+          style={styles.navBtnHitArea}
           onPress={() => {
             const m = new Date(currentMonth);
             m.setMonth(m.getMonth() - 1);
@@ -157,6 +171,7 @@ export default function CalendarScreen() {
           {currentMonth.toLocaleDateString('en-PH', { month: 'long', year: 'numeric' })}
         </Text>
         <Pressable
+          style={styles.navBtnHitArea}
           onPress={() => {
             const m = new Date(currentMonth);
             m.setMonth(m.getMonth() + 1);
@@ -218,11 +233,7 @@ export default function CalendarScreen() {
         <Text style={styles.selectedTotal}>₱{displayTotal}</Text>
       </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.expensesSection}>
         {displayExpenses.length === 0 ? (
           <Text style={styles.emptyText}>
             No expenses in this {view === 'daily' ? 'day' : view === 'weekly' ? 'week' : 'month'}.
@@ -251,15 +262,25 @@ export default function CalendarScreen() {
               />
             ))
         )}
-      </ScrollView>
+      </View>
 
       {!isPremium && <UpgradeCard />}
+      </ScrollView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 16,
+  },
   viewToggle: {
     flexDirection: 'row',
     marginHorizontal: 16,
@@ -290,7 +311,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     marginBottom: 12,
   },
-  navBtn: { color: '#fff', fontSize: 28, fontWeight: '300', padding: 8 },
+  navBtnHitArea: { padding: 12, minWidth: 44, minHeight: 44, justifyContent: 'center', alignItems: 'center' },
+  navBtn: { color: '#fff', fontSize: 28, fontWeight: '300' },
   monthTitle: { color: '#fff', fontSize: 18, fontWeight: '700' },
   calendarRow: {
     flexDirection: 'row',
@@ -359,8 +381,9 @@ const styles = StyleSheet.create({
   },
   selectedLabel: { color: 'rgba(255,255,255,0.9)', fontSize: 15, fontWeight: '600' },
   selectedTotal: { color: '#f87171', fontSize: 18, fontWeight: '800' },
-  scroll: { flex: 1 },
-  scrollContent: { padding: 16, paddingBottom: 40 },
+  mainScroll: { flex: 1 },
+  mainScrollContent: { paddingBottom: 40 },
+  expensesSection: { padding: 16 },
   emptyText: {
     color: 'rgba(255,255,255,0.6)',
     fontSize: 16,

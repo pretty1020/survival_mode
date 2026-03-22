@@ -33,12 +33,12 @@ export function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardProps) {
         {showActions && (
           <View style={styles.actions}>
             {onEdit && (
-              <Pressable style={styles.actionBtn} onPress={() => onEdit(expense)}>
+              <Pressable style={styles.actionBtn} onPress={() => onEdit(expense)} accessibilityLabel="Edit expense" accessibilityRole="button">
                 <Text style={styles.actionText}>✏️</Text>
               </Pressable>
             )}
             {onDelete && (
-              <Pressable style={styles.actionBtn} onPress={() => onDelete(expense)}>
+              <Pressable style={styles.actionBtn} onPress={() => onDelete(expense)} accessibilityLabel="Delete expense" accessibilityRole="button">
                 <Text style={styles.actionText}>🗑️</Text>
               </Pressable>
             )}
@@ -107,7 +107,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   actionBtn: {
-    padding: 6,
+    padding: 12,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   actionText: {
     fontSize: 18,

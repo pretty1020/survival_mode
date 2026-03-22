@@ -25,7 +25,7 @@ const chartConfig = {
 
 export default function SurvivalDashboardScreen() {
   const router = useRouter();
-  const { userData, isPremium, setUserData } = useApp();
+  const { userData, isPremium, setUserData, isLoading } = useApp();
 
   const handleEditExpense = (expense: import('@/types').Expense) => {
     router.push(`/edit-expense/${expense.id}`);
@@ -46,7 +46,15 @@ export default function SurvivalDashboardScreen() {
     ]);
   };
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading dashboard...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const period = userData.budgetSettings.budgetPeriod;
   const handlePeriodChange = async (p: BudgetPeriod) => {
@@ -226,6 +234,8 @@ export default function SurvivalDashboardScreen() {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   scroll: { flex: 1 },
   content: { padding: 20, paddingBottom: 40 },
   meterSection: { marginBottom: 20 },

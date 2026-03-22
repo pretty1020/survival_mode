@@ -7,7 +7,7 @@ export default function TermsScreen() {
     <LinearGradient colors={['#0a0a0f', '#0f172a']} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Terms and Conditions</Text>
-        <Text style={styles.updated}>Last updated: March 2025</Text>
+        <Text style={styles.updated}>Last updated: March 20, 2025</Text>
         <Text style={styles.paragraph}>
           Welcome to Survival Mode Budget Challenge. By using this app, you agree to these terms.
         </Text>

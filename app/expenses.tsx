@@ -20,10 +20,18 @@ const formatDate = (dateKey: string) => {
 
 export default function ExpensesScreen() {
   const router = useRouter();
-  const { userData, setUserData } = useApp();
+  const { userData, setUserData, isLoading } = useApp();
   const [filter, setFilter] = useState<ExpenseFilter>('today');
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading expenses...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const expenses = budgetService.getExpensesFiltered(userData, filter);
   const totalExpenses = budgetService.getTotalExpensesFiltered(userData, filter);
@@ -98,6 +106,8 @@ export default function ExpensesScreen() {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   totalExpensesRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

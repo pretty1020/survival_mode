@@ -16,9 +16,17 @@ import { BADGES } from '@/constants/badges';
 
 export default function ResultsScreen() {
   const router = useRouter();
-  const { userData, isPremium } = useApp();
+  const { userData, isPremium, isLoading } = useApp();
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading results...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const currentBadge = BADGES.filter((b) => userData.badges.includes(b.id)).pop();
   const badgeName = currentBadge?.name ?? 'Budget Newbie';
@@ -122,6 +130,8 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   scroll: {
     flex: 1,
   },

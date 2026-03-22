@@ -25,7 +25,7 @@ const formatDate = (dateKey: string) => {
 };
 
 export default function EventsScreen() {
-  const { userData, setUserData, isPremium } = useApp();
+  const { userData, setUserData, isPremium, isLoading } = useApp();
   const [popupEvent, setPopupEvent] = useState<FinancialEvent | null>(null);
   const [popupVisible, setPopupVisible] = useState(false);
 
@@ -56,7 +56,15 @@ export default function EventsScreen() {
     setPopupEvent(null);
   };
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a', '#1e1b4b']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading events...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const todayKey = new Date().toISOString().split('T')[0];
   const todayEvents = userData.events.filter((e) => e.dateKey === todayKey);
@@ -184,6 +192,8 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   scroll: {
     flex: 1,
   },

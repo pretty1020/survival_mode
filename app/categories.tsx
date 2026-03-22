@@ -19,7 +19,7 @@ const EMOJI_PICKER = ['🍔', '🚌', '📄', '🛒', '📱', '🚨', '🎮', '�
 
 export default function CategoriesScreen() {
   const router = useRouter();
-  const { userData, setUserData } = useApp();
+  const { userData, setUserData, isLoading } = useApp();
   const [modalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEmoji, setNewEmoji] = useState('💰');
@@ -27,7 +27,15 @@ export default function CategoriesScreen() {
   const [editName, setEditName] = useState('');
   const [editEmoji, setEditEmoji] = useState('');
 
-  if (!userData) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading categories...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   const categories = budgetService.getCategories(userData);
 
@@ -169,6 +177,8 @@ export default function CategoriesScreen() {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   content: { padding: 20, paddingBottom: 40 },
   subtitle: { color: 'rgba(255,255,255,0.7)', fontSize: 14, marginBottom: 20 },
   card: {
@@ -182,7 +192,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   emoji: { fontSize: 24, marginRight: 14 },
   name: { flex: 1, color: '#fff', fontSize: 16, fontWeight: '600' },
-  actionBtn: { paddingHorizontal: 12, paddingVertical: 6 },
+  actionBtn: { paddingHorizontal: 14, paddingVertical: 12, minHeight: 44, justifyContent: 'center' },
   actionText: { color: '#3b82f6', fontSize: 14, fontWeight: '600' },
   deleteText: { color: '#f87171' },
   editRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 8 },

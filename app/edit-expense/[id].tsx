@@ -20,12 +20,21 @@ const QUICK_AMOUNTS = [20, 50, 100, 150, 200, 500];
 export default function EditExpenseScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { userData, setUserData } = useApp();
+  const { userData, setUserData, isLoading } = useApp();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [note, setNote] = useState('');
 
-  if (!userData || !id) return null;
+  if (isLoading || !userData) {
+    return (
+      <LinearGradient colors={['#0a0a0f', '#0f172a']} style={styles.gradient}>
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
+  if (!id) return null;
 
   const expense = userData.expenses.find((e) => e.id === id);
   const categories = budgetService.getCategories(userData);
@@ -148,6 +157,8 @@ export default function EditExpenseScreen() {
 
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { color: 'rgba(255,255,255,0.8)', fontSize: 16 },
   container: { flex: 1 },
   content: { padding: 20, paddingBottom: 40 },
   error: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0a0a0f', padding: 24 },
